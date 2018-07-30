@@ -23,21 +23,21 @@ module.exports = app => {
   });
 
   app.post('/api/surveys/webhooks', (req, res) => {
-    const p = new Path('/api/surveys/:surveyId/:choice');
+    const p = new Path('/api/surveys/:surveyid/:choice');
 
     _.chain(req.body)
       .map(({ email, url }) => {
         const match = p.test(new URL(url).pathname);
         if (match) {
-          return { email, surveyId: match.surveyid, choice: match.choice };
+          return { email, surveyid: match.surveyid, choice: match.choice };
         }
       })
       .compact()
-      .uniqBy('email', 'surveyId')
-      .each(({ surveyId, email, choice }) => {
+      .uniqBy('email', 'surveyid')
+      .each(({ surveyid, email, choice }) => {
         Survey.updateOne(
           {
-            _id: surveyId,
+            _id: surveyid,
             recipients: {
               $elemMatch: { email: email, responded: false }
             }
