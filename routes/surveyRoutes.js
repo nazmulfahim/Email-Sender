@@ -18,12 +18,12 @@ module.exports = app => {
     res.send(surveys);
   });
 
-  app.get('/api/surveys/:surveyid/:choice', (req, res) => {
+  app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     res.send('Thanks for voting!');
   });
 
   app.post('/api/surveys/webhooks', (req, res) => {
-    const p = new Path('/api/surveys/:surveyid/:choice');
+    const p = new Path('/api/surveys/:surveyId/:choice');
 
     _.chain(req.body)
       .map(({ email, url }) => {
@@ -33,11 +33,11 @@ module.exports = app => {
         }
       })
       .compact()
-      .uniqBy('email', 'surveyid')
+      .uniqBy('email', 'surveyId')
       .each(({ surveyid, email, choice }) => {
         Survey.updateOne(
           {
-            _id: surveyid,
+            _id: surveyId,
             recipients: {
               $elemMatch: { email: email, responded: false }
             }
